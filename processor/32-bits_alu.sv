@@ -20,6 +20,7 @@ module ALU(
     input [4:0] alu_op; // make it 5 bits for future extension
     output reg [31:0] result;
     output reg zero;
+);
 
     always @(*) begin
         case(alu_op)
@@ -38,5 +39,4 @@ module ALU(
 
         zero = (result == 32'd0);
     end
-
 endmodule
