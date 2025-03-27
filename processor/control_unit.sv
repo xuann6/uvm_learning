@@ -13,7 +13,7 @@ module ControlUnit(
     output reg branch_D,
     output reg [4:0] ALUControl_D, // make this 5-bits for future extension
     output reg ALUSrc_D,
-    output reg [1:0] immSrc_D,
+    output reg [1:0] immSrc_D
 );
 
     // Define instruction opcodes (RISC-V)
@@ -120,7 +120,7 @@ module ControlUnit(
                     3'b110: ALUControl_D = ALU_OR;   // ORI
                     3'b111: ALUControl_D = ALU_AND;  // ANDI
                     3'b001: ALUControl_D = ALU_SLL;  // SLLI
-                    3'b101: ALUControl_D = funct7_bit5 ? ALU_SRL : ALU_SLL; // SRLI/SRAI
+                    3'b101: ALUControl_D = funct7_bit5 ? ALU_SRA : ALU_SRL; // SRLI/SRAI
                     default: ALUControl_D = ALU_ADD;
                 endcase
             end
@@ -137,13 +137,18 @@ module ControlUnit(
                     3'b110: ALUControl_D = ALU_OR;   // OR
                     3'b111: ALUControl_D = ALU_AND;  // AND
                     3'b001: ALUControl_D = ALU_SLL;  // SLL
-                    3'b101: ALUControl_D = funct7_bit5 ? ALU_SRL : ALU_SLL; // SRL/SRA
+                    3'b101: ALUControl_D = funct7_bit5 ? ALU_SRA : ALU_SRL; // SRL/SRA
                     default: ALUControl_D = ALU_ADD;
                 endcase
             end
             
             OPCODE_LUI: begin
                 regWrite_D = 1'b1;
+                resultSrc_D = RESULT_ALU;
+                memWrite_D = 1'b0;
+                jump_D = 1'b0;
+                branch_D = 1'b0;
+                ALUControl_D = ALU_ADD;
                 ALUSrc_D = 1'b1;
                 immSrc_D = IMM_J;
             end
@@ -151,6 +156,10 @@ module ControlUnit(
             OPCODE_AUIPC: begin
                 regWrite_D = 1'b1;
                 resultSrc_D = RESULT_PC_IMM;
+                memWrite_D = 1'b0;
+                jump_D = 1'b0;
+                branch_D = 1'b0;
+                ALUControl_D = ALU_ADD;
                 ALUSrc_D = 1'b1;
                 immSrc_D = IMM_J;
             end

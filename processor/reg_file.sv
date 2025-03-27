@@ -9,7 +9,7 @@ module registerFile(
     input w_enable,
     input [31:0] w_data,
     output reg [31:0] r_data1,
-    output reg [31:0] r_data2,
+    output reg [31:0] r_data2
 );
     reg [31:0] r_file [0:31];
  
