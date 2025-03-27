@@ -33,6 +33,16 @@ module HazardUnit(
     // stall and flush
     assign stall_F = lwStall;
     assign stall_D = lwStall;
+<<<<<<< HEAD
+<<<<<<< HEAD
+    assign flush_D = PCSrc_E;            // Flush if branch/jump
+    assign flush_E = lwStall || PCSrc_E; // Flush if load-use hazard or branch/jump
+=======
     assign flush_D = PCSrc_E;    // Flush if branch/jump
     assign flush_E = lwStall || PCSrc_E;  // Flush if load-use hazard or branch/jump
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+    assign flush_D = PCSrc_E;            // Flush if branch/jump
+    assign flush_E = lwStall || PCSrc_E; // Flush if load-use hazard or branch/jump
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
 endmodule

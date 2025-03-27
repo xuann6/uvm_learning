@@ -30,6 +30,14 @@ module RISCVPipelined(
     logic [31:0] PC_plus4_D;
     logic [31:0] r_data1_D, r_data2_D;
     logic [31:0] immExt_D;
+<<<<<<< HEAD
+<<<<<<< HEAD
+    logic [2:0] funct3_D;
+=======
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+    logic [2:0] funct3_D;
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
     logic [4:0] rs1_D, rs2_D, rd_D;
     
     logic regWrite_D;
@@ -48,6 +56,14 @@ module RISCVPipelined(
     logic [31:0] PC_plus4_E;
     logic [31:0] rd1_E, rd2_E;
     logic [31:0] immExt_E;
+<<<<<<< HEAD
+<<<<<<< HEAD
+    logic [2:0] funct3_E;
+=======
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+    logic [2:0] funct3_E;
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
     logic [4:0] rs1_E, rs2_E, rd_E;
     logic [31:0] ALUResult_E;
     logic [31:0] writeData_E;
@@ -104,7 +120,15 @@ module RISCVPipelined(
     
     // Instruction Memory
     inst_memory imem(
+<<<<<<< HEAD
+<<<<<<< HEAD
+        .addr(PC_F[11:0]),
+=======
         .addr(PC_F[9:0]),
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+        .addr(PC_F[11:0]),
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
         .inst(instruction_F)
     );
     
@@ -175,6 +199,14 @@ module RISCVPipelined(
     assign rs1_D = instruction_D[19:15];
     assign rs2_D = instruction_D[24:20];
     assign rd_D = instruction_D[11:7];
+<<<<<<< HEAD
+<<<<<<< HEAD
+    assign funct3_D = instruction_D[14:12];
+=======
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+    assign funct3_D = instruction_D[14:12];
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
     
     // ===== ID/EX Pipeline Register =====
     IDEX id_ex(
@@ -185,6 +217,16 @@ module RISCVPipelined(
         .r_data1(r_data1_D),
         .r_data2(r_data2_D),
         .immExt_D(immExt_D),
+<<<<<<< HEAD
+<<<<<<< HEAD
+        .funct3_D(funct3_D),
+        .funct3_E(funct3_E),
+=======
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+        .funct3_D(funct3_D),
+        .funct3_E(funct3_E),
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
         .rs1(rs1_D),
         .rs2(rs2_D),
         .rd(rd_D),
@@ -242,14 +284,42 @@ module RISCVPipelined(
         .result(ALUResult_E),
         .zero(zero_E)
     );
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
     assign PC_target_E = PC_E + immExt_E;
     
     always_comb begin
         if (jump_E)
             PCSrc_E = 1'b1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
+        else if (branch_E) begin
+            case(funct3_E)
+                3'b000: PCSrc_E = zero_E;                    // BEQ
+                3'b001: PCSrc_E = ~zero_E;                   // BNE
+                3'b100: PCSrc_E = ALUResult_E[31];           // BLT - check sign bit
+                3'b101: PCSrc_E = ~ALUResult_E[31] || zero_E; // BGE
+                3'b110: PCSrc_E = ALUResult_E[0];            // BLTU (if using SLT)
+                3'b111: PCSrc_E = ~ALUResult_E[0] || zero_E; // BGEU (if using SLT)
+                default: PCSrc_E = zero_E;
+            endcase
+        end
+<<<<<<< HEAD
+=======
         else if (branch_E && zero_E)
             PCSrc_E = 1'b1;
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
         else
             PCSrc_E = 1'b0;
     end
@@ -280,7 +350,15 @@ module RISCVPipelined(
     data_memory dmem(
         .clk(clk),
         .w_enable(memWrite_M),
+<<<<<<< HEAD
+<<<<<<< HEAD
+        .addr(ALUResult_M[13:0]),
+=======
         .addr(ALUResult_M[15:2]),
+>>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
+=======
+        .addr(ALUResult_M[13:0]),
+>>>>>>> 32b7cfd (1. Passed all the unit test.)
         .w_data(writeData_M),
         .r_data(readData_M)
     );

@@ -5,7 +5,7 @@ module PC(
     input stall,
     input [31:0] PC_next, // from either jump/branch or PC+4
                           // there's a mux before this module
-    output reg [31:0] PC,
+    output reg [31:0] PC
 );
 
     always @(posedge clk) begin
