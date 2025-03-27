@@ -33,6 +33,6 @@ module HazardUnit(
     // stall and flush
     assign stall_F = lwStall;
     assign stall_D = lwStall;
-    assign flush_D = PCSrc_E;    // Flush if branch/jump
-    assign flush_E = lwStall || PCSrc_E;  // Flush if load-use hazard or branch/jump
+    assign flush_D = PCSrc_E;            // Flush if branch/jump
+    assign flush_E = lwStall || PCSrc_E; // Flush if load-use hazard or branch/jump
 endmodule

@@ -9,6 +9,7 @@ module IDEX(
     input [31:0] r_data1,
     input [31:0] r_data2,
     input [31:0] immExt_D,
+    input [2:0] funct3_D,
     input [4:0] rs1,
     input [4:0] rs2,
     input [4:0] rd,
@@ -30,6 +31,7 @@ module IDEX(
     output reg [31:0] rd1_E,
     output reg [31:0] rd2_E,
     output reg [31:0] immExt_E,
+    output reg [2:0] funct3_E,
     output reg [4:0] rs1_E,
     output reg [4:0] rs2_E,
     output reg [4:0] rd_E,
@@ -51,6 +53,7 @@ module IDEX(
             rd1_E <= 32'b0;
             rd2_E <= 32'b0;
             immExt_E <= 32'b0;
+            funct3_E <= 3'b0;
             rs1_E <= 5'b0;
             rs2_E <= 5'b0;
             rd_E <= 5'b0;
@@ -69,6 +72,7 @@ module IDEX(
             rd1_E <= r_data1;
             rd2_E <= r_data2;
             immExt_E <= immExt_D;
+            funct3_E <= funct3_D;
             rs1_E <= rs1;
             rs2_E <= rs2;
             rd_E <= rd;
