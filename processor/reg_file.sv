@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module registerFile(
     input clk,
     input reset,
@@ -23,6 +25,7 @@ module registerFile(
     end
 
     always @(posedge reset) begin // initialize the r_file value to all zero
+        integer i;
         for (i = 0; i < 32; i = i + 1) begin
             r_file[i] <= 32'd0;
         end
