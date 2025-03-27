@@ -15,11 +15,11 @@
 `define OP_ALU_SRA  5'b01011  // SRA (Shift Right Arithmetic)
 
 module ALU(
-    input [31:0] a;
-    input [31:0] b;
-    input [4:0] alu_op; // make it 5 bits for future extension
-    output reg [31:0] result;
-    output reg zero;
+    input [31:0] a,
+    input [31:0] b,
+    input [4:0] alu_op, // make it 5 bits for future extension
+    output reg [31:0] result,
+    output reg zero,
 );
 
     always @(*) begin
