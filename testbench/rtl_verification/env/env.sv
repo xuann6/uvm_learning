@@ -5,6 +5,7 @@ class riscv_env extends uvm_env;
     `uvm_component_utils(riscv_env)
     
     driver       drv;
+    sequencer    sqr;
     monitor      mon;
     scoreboard   scb;
     
@@ -24,6 +25,7 @@ class riscv_env extends uvm_env;
         
         // Create components
         drv = driver::type_id::create("drv", this);
+        sqr = sequencer::type_id::create("sqr", this);
         mon = monitor::type_id::create("mon", this);
         scb = scoreboard::type_id::create("scb", this);
         
@@ -35,6 +37,9 @@ class riscv_env extends uvm_env;
     function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
         
+        // Connect driver to sequencer
+        drv.seq_item_port.connect(sqr.seq_item_export);
+
         // Connect monitor to scoreboard
         mon.analysis_port.connect(scb.analysis_imp);
     endfunction
