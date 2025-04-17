@@ -3,6 +3,10 @@
 ## Implementation
 
 ## Verification
+
+<img src="fig/uvm.png" alt="Alt text" width="500"/>
+
+
 ### File Structure
 
 ### Step-by-Step Guideline
