@@ -6,7 +6,7 @@ class driver extends uvm_driver #(transaction);
   
     virtual if vif;
   
-     bit [31:0] instr_mem[int]; // datatype is 32 bits, and the keys are int datatype
+    bit [31:0] instr_mem[int]; // datatype is 32 bits, and the keys are int datatype
                                 // (since we use current_instr_idx as address)
     bit [31:0] data_mem[int];
   
