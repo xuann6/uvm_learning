@@ -64,9 +64,19 @@ end
 `run_test()` calls our the base_test for testing. To specify which test are we running, we can use `run_test(base_test)` to run the `base_test` class in `test.sv` file. The other option is to add `+UVM_TESTNAME=base_test` when running the simulation in command line.
 
 #### Test
-> file: `test/test.sv`
+> path: `test/test.sv`
 
+We are allowed to run different test cases. `test.sv` starts from `riscv_base_test`, which only provides basic `build_phase` and `run_phase`. We then inherited the `riscv_base_test` and created `riscv_{RISC-V Inst Type}_type_test`, including 'r' for R-type, 'i' for I-type, and 'load_store' for LOAD and STORE instruction. 
 
+`riscv_{RISC-V Inst Type}_type_test` will create each type of the following sequence in `sequence.sv`, where we actually create the transaction for sending to DUT. 
+
+In the `riscv_base_test` class, we are reusing the virtual interface that we created in `tb_top.sv`. After getting and checking it, we then pass it down to the env where our monitor and driver use it to connect with DUT. 
+
+> **Why and where we need virtual interface?**
+> For the components that are directly interacting with DUT, we need virtual interface. The reason is because in SystemVerilog, there are two separate worlds: static module world and dynamic class world. Static module world includes DUT, interfaces, and all the other physical connections. On the other hand, dynamic class world includes all UVM objects. The keyword "virtual" provides the class objects the ability to access the static module items. So for virtual interface, we are basically providing our env, monitor, and driver the ability to communicate with DUT.
+
+> **Why we need `phase_raise_object(this)` and `phase_drop_object(this)`?**
+> The raise and drop is generally a flag that tells UVM if we are still doing something in this phase. UVM process will not enter the next phase unless all the components in the current phase have called `phase_drop_object(this)`. Addtionally, these statements can be added to all the phases, but it's often not necessart to do so beside run_phase, since run_phase is the phase that actually executes the stimulus, and the duration of this phase is often not predetermined.
 
 #### Transaction
 > file: `env/agent/transaction.sv`

@@ -5,7 +5,6 @@ class riscv_base_test extends uvm_test;
     `uvm_component_utils(riscv_base_test)
     
     riscv_env env;
-    
     virtual if vif;
     
     function new(string name = "riscv_base_test", uvm_component parent = null);
@@ -13,9 +12,9 @@ class riscv_base_test extends uvm_test;
     endfunction
     
     function void build_phase(uvm_phase phase);
-        super.build_phase(phase);
+        super.build_phae(phase);
         
-        // Get interface from config DB
+        // Get interface from config DB (reusing it)
         if (!uvm_config_db#(virtual if)::get(this, "", "vif", vif)) begin
             `uvm_fatal("TEST", "Could not get vif from config DB")
         end
@@ -23,7 +22,7 @@ class riscv_base_test extends uvm_test;
         // Create environment
         env = riscv_env::type_id::create("env", this);
         
-        // Pass interface to environment
+        // Pass interface to environment for monitor and driver to use it
         uvm_config_db#(virtual if)::set(this, "env", "vif", vif);
     endfunction
     
@@ -49,7 +48,7 @@ class riscv_base_test extends uvm_test;
 endclass
 
 // R-Type Instructions Test, 
-// all the following functions are derived from riscv_base_test
+// all the tests (R, I, LOAD/STORE types) derive from riscv_base_test class
 class riscv_r_type_test extends riscv_base_test;
     `uvm_component_utils(riscv_r_type_test)
     
