@@ -27,6 +27,7 @@ module top;
         reset = 0;
     end
     
+    // Interface instantiation
     if intf(.clk(clk), .reset(reset));
     
     // DUT instantiation
@@ -35,25 +36,25 @@ module top;
         .reset(reset)
     );
     
-    // Connect DUT and interface signals
-    // This depends on your interface definition and DUT signals
-    // Example connections might be:
+    // Todo: 
+    //  1. What exactly signal are we trying to get from the DUT for monitor
+    //  2. What exactly signal are we passing into the DUT (basically just clk and rst)
     assign intf.monitor_pc = dut.PC_F;
     assign intf.monitor_instr = dut.instruction_F;
     assign intf.monitor_result = dut.result_W;
     
-    // Start UVM testbench
     initial begin
         // Register interface with UVM config database
         uvm_config_db#(virtual if)::set(null, "*", "vif", intf);
-        
-        // Run the test
+
+        // Need to specify the running test name here 
+        // or in the command line when simulation
         run_test();
     end
     
-    // Optional: Add waveform dumping
-    initial begin
-        $dumpfile("dump.vcd");
-        $dumpvars(0, top);
-    end
+    // Dumping waveform (optional)
+    // initial begin
+    //     $dumpfile("dump.vcd");
+    //     $dumpvars(0, top);
+    // end
 endmodule
