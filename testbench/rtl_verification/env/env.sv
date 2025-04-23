@@ -29,7 +29,7 @@ class riscv_env extends uvm_env;
         mon = monitor::type_id::create("mon", this);
         scb = scoreboard::type_id::create("scb", this);
         
-        // Set interface for components
+        // Set interface for driver and monitor
         uvm_config_db#(virtual if)::set(this, "drv", "vif", vif);
         uvm_config_db#(virtual if)::set(this, "mon", "vif", vif);
     endfunction
@@ -45,9 +45,11 @@ class riscv_env extends uvm_env;
     endfunction
     
     task reset_phase(uvm_phase phase);
-        phase.raise_objection(this); // does reset_phase needs this?
+        // We are using task here since we will consume simulation time
+        // for all the initialization and reset. 
+
+        phase.raise_objection(this);
         
-        // Do all the initialization
         scb.reset_models();
         initialize_default_registers();
         initialize_default_memory();
@@ -57,7 +59,9 @@ class riscv_env extends uvm_env;
     
     // Helper method to initialize registers with default values
     function void initialize_default_registers();
-        // The following values are modified according to the test cases
+        
+        // Todo:
+        //   Modify based on test cases
         scb.set_initial_reg_value(1, 32'h00000005);  // x1 = 5
         scb.set_initial_reg_value(2, 32'h0000000A);  // x2 = 10
         scb.set_initial_reg_value(3, 32'hFFFFFFFF);  // x3 = -1
@@ -66,7 +70,8 @@ class riscv_env extends uvm_env;
     
     // Helper method to initialize memory with default values
     function void initialize_default_memory();
-        // The following values are modified according to the test cases
+        // Todo:
+        //   Modify based on test cases
         scb.set_initial_mem_value(32'h00000014, 32'hABCDEF01); // Memory address 5*4 (20)
     endfunction
     

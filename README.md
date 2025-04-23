@@ -2,6 +2,9 @@
 
 This documentations and all the codes are written by Yu-Hsuan (Yoshi) Chao. I started this side project since I realized that lots of the job for new grad asked for the verification skills, especially for UVM and SystemVerilog. First off, I tried Udemy course for SystemVerilog, UVM, and a follow-up project about UVM. The course gave me an initial glimpse about UVM and let me understand how powerful UVM is. However, the project is mostly about setting up easy UVM environment for some protocols (IC2, UART, SPI), and I feel like this isn't that interesting and I need more hands-on practice. So, I started to verifymy past project, which is a RISC-V 5 staged pipelined processor using UVM and document the learning path here as an open-source project.
 
+## References
+- [chipverify.com](https://www.chipverify.com/)
+
 ## Processor Implementation
 
 ## Processor Verification (UVM)
@@ -76,7 +79,19 @@ In the `riscv_base_test` class, we are reusing the virtual interface that we cre
 > For the components that are directly interacting with DUT, we need virtual interface. The reason is because in SystemVerilog, there are two separate worlds: static module world and dynamic class world. Static module world includes DUT, interfaces, and all the other physical connections. On the other hand, dynamic class world includes all UVM objects. The keyword "virtual" provides the class objects the ability to access the static module items. So for virtual interface, we are basically providing our env, monitor, and driver the ability to communicate with DUT.
 
 > **Why we need `phase_raise_object(this)` and `phase_drop_object(this)`?**
-> The raise and drop is generally a flag that tells UVM if we are still doing something in this phase. UVM process will not enter the next phase unless all the components in the current phase have called `phase_drop_object(this)`. Addtionally, these statements can be added to all the phases, but it's often not necessart to do so beside run_phase, since run_phase is the phase that actually executes the stimulus, and the duration of this phase is often not predetermined.
+> The raise and drop is generally a flag that tells UVM if we are still doing something in this phase. UVM process will not enter the next phase unless all the components in the current phase have called `phase_drop_object(this)`. Addtionally, these statements can be added to all the phases, but it's often not necessary to do so beside run_phase, since run_phase is the phase that actually executes the stimulus, and the duration of this phase is often not predetermined.
+
+#### Environment
+> path: `env/env.sv`
+UVM environment is the place that you put all of your reusable UVM components and define their default configuration by different applications. Inside the environment, you can have different numbers of interfaces, scoreboards, functional coverage collectors, etc, depending on the test cases you need. You can also have another environment inside it to provide a finer granularity testing. For instance, from sub-system level to block level.
+
+From the code, you can see we have one driver, monitor, sequencer, and scoreboard in our environment. In `build_phase`, we create all the components and make sure the virtual interface is set to both driver and monitor correctly. In `connect_phase`, we connect the driver to sequencer and monitor to scoreboard. In `reset_phase`, we initialize the reg_file and memory to the default value.
+
+> **Why `reset_phase` is using task and all the other phases are using function?**
+> In UVM, we can choose our phases either using task or function based on the specific usage of component. As our understanding in SystemVerilog, function happens immediately and we have no timing control in it. For task, it consumes simulation time and that's why we need to add the raise/drop objects to make sure the UVM won't enter the next phase til this `reset_phase` finishes.
+
+> **What's the `UVM_LOW` at the end of ``uvm_info`?**
+> Represent the verbosity level of this print message is LOW. The console will print the verbosity level which is less than the system configuration. Default verbosity is MEDIUM, so the message will be printed. For more information, you can check [Report Functions](https://www.chipverify.com/uvm/report-functions)
 
 #### Transaction
 > file: `env/agent/transaction.sv`
