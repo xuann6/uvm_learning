@@ -90,8 +90,28 @@ From the code, you can see we have one driver, monitor, sequencer, and scoreboar
 > **Why `reset_phase` is using task and all the other phases are using function?**
 > In UVM, we can choose our phases either using task or function based on the specific usage of component. As our understanding in SystemVerilog, function happens immediately and we have no timing control in it. For task, it consumes simulation time and that's why we need to add the raise/drop objects to make sure the UVM won't enter the next phase til this `reset_phase` finishes.
 
-> **What's the `UVM_LOW` at the end of ``uvm_info`?**
+> **What's the `UVM_LOW` at the end of `uvm_info`?**
 > Represent the verbosity level of this print message is LOW. The console will print the verbosity level which is less than the system configuration. Default verbosity is MEDIUM, so the message will be printed. For more information, you can check [Report Functions](https://www.chipverify.com/uvm/report-functions)
+
+#### Driver
+> file: `env/agent/driver.sv`
+
+Driver will 'drive' the the transaction to the design through virtual interface, and the transaction level object will be obtained from the `sequencer`, which we will talk about next.
+
+The main focus for the driver will be in the `run_phase`. In the `run_phase`, the complete process to pass the transaction will be: get the next transaction from sequencer, send the transaction to DUT, and end the current transaction. There are 3 methods for a driver to interact with a sequencer:
+1. `get_next_item()` - block until the next item is available from sequencer, should follow by `item_done()`
+2. `try_next_item()` - non-blocking method, which will return null if the request transaction object if not available from sequencer. Else will return a pointer to the object
+3. `item_done()` - be called after `get_next_item` or the successful `try_next_item`
+
+There are two ways to complete the handshake between `dirver` and `sequencer`:
+1. `get_next_item` followed by `item_done` - `finish_item` call in sequence finishes after `item_done` call (`finish_item` will be mentioned in the following chapter)
+2. `get` followed by `put` - `finish_item` call in sequence finishes right after `put` call
+
+> **Is it necessary to use non-blocking assignment with `get_next_item`/`item_done` handshake?**
+> No, it is not necessary, the usage of the handshake protocol is not related to the blocking/non-blocking assignment. So does the blocking/non-blocking usage in `get`/`put` protocol.
+
+> **Why don't we need to declare `seq_item_port` in driver?**
+> The `seq_item_port` is already declared in the uvm_driver base class so we don't have to declare it again.
 
 #### Transaction
 > file: `env/agent/transaction.sv`
