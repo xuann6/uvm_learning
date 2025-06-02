@@ -19,15 +19,7 @@ module ALU(
     input [31:0] b,
     input [4:0] alu_op, // make it 5 bits for future extension
     output reg [31:0] result,
-<<<<<<< HEAD
-<<<<<<< HEAD
     output reg zero
-=======
-    output reg zero,
->>>>>>> 681e85c (1. Completed top.sv, entering the debugging phase.)
-=======
-    output reg zero
->>>>>>> 32b7cfd (1. Passed all the unit test.)
 );
 
     always @(*) begin

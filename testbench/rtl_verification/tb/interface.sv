@@ -1,4 +1,4 @@
-interface if(input logic clk, input logic reset);
+interface riscv_if(input logic clk, input logic reset);
   
   // memory initialization
   logic        init_mem;

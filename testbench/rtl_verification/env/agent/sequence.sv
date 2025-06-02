@@ -24,6 +24,25 @@ class base_seq extends uvm_sequence #(transaction);
     endtask
 endclass
 
+// NOP for base test 
+class nop_seq extends base_seq;
+    `uvm_object_utils(nop_seq)
+    
+    function new(string name = "nop_seq");
+        super.new(name);
+    endfunction
+    
+    virtual task body();
+        transaction tx;
+        
+        `uvm_info("NOP_SEQ", "Sending NOP instruction for base test", UVM_MEDIUM)
+        
+        // ADDI x0, x0, 0 (NOP - does nothing)
+        tx = create_instr(32'h00000013, "NOP");
+        send_tx(tx);
+    endtask
+endclass
+
 // R-Type Instructions Sequence
 class r_type_seq extends base_seq;
     `uvm_object_utils(r_type_seq)

@@ -9,7 +9,7 @@ class riscv_env extends uvm_env;
     monitor      mon;
     scoreboard   scb;
     
-    virtual if vif;
+    virtual riscv_if vif;
     
     function new(string name, uvm_component parent);
         super.new(name, parent);
@@ -19,7 +19,7 @@ class riscv_env extends uvm_env;
         super.build_phase(phase);
         
         // Get interface from config DB
-        if (!uvm_config_db#(virtual if)::get(this, "", "vif", vif)) begin
+        if (!uvm_config_db#(virtual riscv_if)::get(this, "", "vif", vif)) begin
             `uvm_fatal("ENV", "Could not get vif from config DB")
         end
         
@@ -30,8 +30,8 @@ class riscv_env extends uvm_env;
         scb = scoreboard::type_id::create("scb", this);
         
         // Set interface for driver and monitor
-        uvm_config_db#(virtual if)::set(this, "drv", "vif", vif);
-        uvm_config_db#(virtual if)::set(this, "mon", "vif", vif);
+        uvm_config_db#(virtual riscv_if)::set(this, "drv", "vif", vif);
+        uvm_config_db#(virtual riscv_if)::set(this, "mon", "vif", vif);
     endfunction
     
     function void connect_phase(uvm_phase phase);

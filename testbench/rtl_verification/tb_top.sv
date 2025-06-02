@@ -1,5 +1,7 @@
-`include "uvm_macros.svh"
+`timescale 1ns/1ps
+
 import uvm_pkg::*;
+`include "uvm_macros.svh"
 
 `include "tb/interface.sv"
 `include "env/agent/transaction.sv"
@@ -11,7 +13,7 @@ import uvm_pkg::*;
 `include "env/env.sv"
 `include "test/test.sv"
 
-module top;
+module tb;
     bit clk;
     bit reset;
     
@@ -28,7 +30,7 @@ module top;
     end
     
     // Interface instantiation
-    if intf(.clk(clk), .reset(reset));
+    riscv_if intf(.clk(clk), .reset(reset));
     
     // DUT instantiation
     RISCVPipelined dut(
@@ -45,7 +47,7 @@ module top;
     
     initial begin
         // Register interface with UVM config database
-        uvm_config_db#(virtual if)::set(null, "*", "vif", intf);
+        uvm_config_db#(virtual riscv_if)::set(null, "*", "vif", intf);
 
         // Need to specify the running test name here 
         // or in the command line when simulation

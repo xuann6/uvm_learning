@@ -5,17 +5,17 @@ class riscv_base_test extends uvm_test;
     `uvm_component_utils(riscv_base_test)
     
     riscv_env env;
-    virtual if vif;
+    virtual riscv_if vif;
     
     function new(string name = "riscv_base_test", uvm_component parent = null);
         super.new(name, parent);
     endfunction
     
     function void build_phase(uvm_phase phase);
-        super.build_phae(phase);
+        super.build_phase(phase);
         
         // Get interface from config DB (reusing it)
-        if (!uvm_config_db#(virtual if)::get(this, "", "vif", vif)) begin
+        if (!uvm_config_db#(virtual riscv_if)::get(this, "", "vif", vif)) begin
             `uvm_fatal("TEST", "Could not get vif from config DB")
         end
         
@@ -23,10 +23,13 @@ class riscv_base_test extends uvm_test;
         env = riscv_env::type_id::create("env", this);
         
         // Pass interface to environment for monitor and driver to use it
-        uvm_config_db#(virtual if)::set(this, "env", "vif", vif);
+        uvm_config_db#(virtual riscv_if)::set(this, "env", "vif", vif);
     endfunction
     
-    task run_phase(uvm_phase phase);
+    task run_phase(uvm_phase phase);  
+        
+        nop_seq seq;
+
         phase.raise_objection(this);
         
         `uvm_info("TEST", $sformatf("\n\n********************************************"), UVM_LOW)
@@ -34,7 +37,12 @@ class riscv_base_test extends uvm_test;
         `uvm_info("TEST", $sformatf("********************************************\n"), UVM_LOW)
         
         #100;
-        
+
+        seq = nop_seq::type_id::create("seq");
+        seq.start(env.sqr);
+
+        #100;
+
         phase.drop_objection(this);
     endtask
     
@@ -68,7 +76,7 @@ class riscv_r_type_test extends riscv_base_test;
         #100;
         
         seq = r_type_seq::type_id::create("seq");
-        seq.start(env.drv.sequencer);
+        seq.start(env.sqr);
         
         #200;
         
@@ -96,7 +104,7 @@ class riscv_i_type_test extends riscv_base_test;
         #100;
         
         seq = i_type_seq::type_id::create("seq");
-        seq.start(env.drv.sequencer);
+        seq.start(env.sqr);
         
         #200;
         
@@ -124,7 +132,7 @@ class riscv_load_store_test extends riscv_base_test;
         #100;
         
         seq = load_store_seq::type_id::create("seq");
-        seq.start(env.drv.sequencer);
+        seq.start(env.sqr);
         
         #200;
         
