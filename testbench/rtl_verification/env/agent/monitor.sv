@@ -34,29 +34,28 @@ class monitor extends uvm_monitor;
         
         @(negedge vif.reset);
         
-        // TODO - this needs to be modified in the future, 
-        //        currently the length of this repeat requires to be modified
-        //        based on the length of the test case
-        repeat(10) begin
+        forever begin
             begin
-
-                `uvm_info("MONITOR_DEBUG", $sformatf("monitor_instr=0x%8h, monitor_pc=0x%8h", 
-                            vif.monitor_cb.monitor_instr, vif.monitor_cb.monitor_pc), UVM_LOW)
+                
+                //`uvm_info("DEBUG", $sformatf("monitor_regwrite=%b, monitor_rd=%d, monitor_result=0x%h", 
+                //    vif.monitor_cb.monitor_regwrite, vif.monitor_cb.monitor_rd, vif.monitor_cb.monitor_result), UVM_MEDIUM)
 
                 // Monitor register file writes
                 if (vif.monitor_cb.monitor_regwrite && vif.monitor_cb.monitor_rd != 0) begin
                     // transaction for the result
                     tx = create_result_transaction();
                     
+                    `uvm_info("MONITOR", $sformatf("\033[1;34m Starting a new transaction...\033[0m"), UVM_LOW)
+
                     // send to the scoreboard
                     analysis_port.write(tx);
                 end
             
                 // Monitor for new instructions
-                if (vif.monitor_cb.monitor_instr != 32'h0) begin
-                    // Track new instruction
-                    track_new_instruction();
-                end
+                // if (vif.monitor_cb.monitor_instr != 32'h0) begin        
+                //     // Track new instruction
+                //     track_new_instruction();
+                // end
                 
                 // Monitor memory operations
                 monitor_memory_operations();
@@ -71,32 +70,19 @@ class monitor extends uvm_monitor;
     // Create a transaction representing an execution result
     function transaction create_result_transaction();
         transaction tx = transaction::type_id::create("tx");
+    
+        tx.pc = vif.monitor_cb.monitor_pc;
+        tx.instruction = vif.monitor_cb.monitor_instr;
+        tx.result_reg = vif.monitor_cb.monitor_rd;
+        tx.result = vif.monitor_cb.monitor_result;
         
-        // Gather instruction information if available
-        if (instr_map.exists(vif.monitor_cb.monitor_pc)) begin
-            tx = instr_map[vif.monitor_cb.monitor_pc];
-            
-            // Add result information
-            tx.result = vif.monitor_cb.monitor_result;
-            tx.result_reg = vif.monitor_cb.monitor_rd;
-            
-            `uvm_info("MONITOR", $sformatf("Observed result: x%0d = 0x%8h for instruction %s at PC=0x%8h", 
-                        tx.result_reg, tx.result, tx.instr_name, tx.pc), UVM_MEDIUM)
-            
-            // Remove from tracking map
-            instr_map.delete(vif.monitor_cb.monitor_pc);
-        end
-        else begin
-            // No tracked instruction, create minimal transaction
-            tx.pc = vif.monitor_cb.monitor_pc;
-            tx.result_reg = vif.monitor_cb.monitor_rd;
-            tx.result = vif.monitor_cb.monitor_result;
-            
-            `uvm_info("MONITOR", $sformatf("Observed untracked result: x%0d = 0x%8h at PC=0x%8h", 
-                        tx.result_reg, tx.result, tx.pc), UVM_MEDIUM)
-        end
+        tx.decode_instruction();
+        
+        //`uvm_info("MONITOR", $sformatf("Observed result: x%0d = 0x%8h for instruction %s at PC=0x%8h", 
+        //            tx.result_reg, tx.result, tx.instr_name, tx.pc), UVM_MEDIUM)
         
         return tx;
+        
     endfunction
     
     // Track a new instruction entering the pipeline

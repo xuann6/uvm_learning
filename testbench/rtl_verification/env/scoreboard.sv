@@ -47,7 +47,7 @@ class scoreboard extends uvm_scoreboard;
     function void check_transaction(transaction tx);
         bit [31:0] expected_value;
         
-        `uvm_info("SCOREBOARD", $sformatf("Checking transaction: %s", tx.convert2string()), UVM_HIGH)
+        `uvm_info("SCOREBOARD", $sformatf("Checking transaction: %s", tx.convert2string()), UVM_LOW)
         
         // only focus on reg/mem write function for now, 
         // other instructions (read, jump, branch) will be verified indirectly.
@@ -56,13 +56,17 @@ class scoreboard extends uvm_scoreboard;
             calculate_expected_result(tx, expected_value);
             
             if (expected_value === tx.result) begin
-                `uvm_info("SCOREBOARD", $sformatf("PASS: %s - x%0d expected: 0x%8h, actual: 0x%8h", 
-                          tx.instr_name, tx.result_reg, expected_value, tx.result), UVM_MEDIUM)
+                `uvm_info("SCOREBOARD", $sformatf("\033[1;32m PASS: %s\033[0m ", tx.instr_name), UVM_MEDIUM)
+
+                `uvm_info("SCOREBOARD", $sformatf("%8h %s %8h = %8h and expected %8h", reg_file_model[tx.rs1], tx.instr_name, reg_file_model[tx.rs2], tx.result, expected_value), UVM_MEDIUM)
                 passed_checks++;
             end
             else begin
-                `uvm_error("SCOREBOARD", $sformatf("FAIL: %s - x%0d expected: 0x%8h, actual: 0x%8h", 
+                `uvm_error("SCOREBOARD", $sformatf("\033[1;31m FAIL: %s\033[0m - x%0d expected: 0x%8h, actual: 0x%8h", 
                            tx.instr_name, tx.result_reg, expected_value, tx.result))
+                
+                `uvm_info("SCOREBOARD", $sformatf("%8h %s %8h = %8h but expected %8h", reg_file_model[tx.rs1], tx.instr_name, reg_file_model[tx.rs2], tx.result, expected_value), UVM_MEDIUM)
+                
                 failed_checks++;
             end
             
@@ -150,19 +154,20 @@ class scoreboard extends uvm_scoreboard;
         `uvm_info("SCOREBOARD", $sformatf("Failed Checks:     %0d", failed_checks), UVM_LOW)
         
         if (failed_checks == 0 && total_checks > 0) begin
-            `uvm_info("SCOREBOARD", $sformatf("\n*** TEST PASSED: All %0d checks passed! ***\n", total_checks), UVM_LOW)
+            `uvm_info("SCOREBOARD", $sformatf("\033[1;34m\n*** TEST PASSED: All %0d checks passed! ***\033[0m\n", total_checks), UVM_LOW)
         end
         else if (failed_checks > 0) begin
-            `uvm_error("SCOREBOARD", $sformatf("\n*** TEST FAILED: %0d of %0d checks failed! ***\n", 
-                       failed_checks, total_checks))
+            `uvm_error("SCOREBOARD", $sformatf("\033[1;31m\n*** TEST FAILED: %0d of %0d checks failed! ***\033[0m\n", 
+                    failed_checks, total_checks))
         end
         else begin
-            `uvm_warning("SCOREBOARD", "\n*** No checks were performed! ***\n")
+            `uvm_warning("SCOREBOARD", $sformatf("\033[1;33m\n*** No checks were performed! ***\033[0m\n"))
         end
     endfunction
     
     // Helper method to set initial register values (useful in env file)
     function void set_initial_reg_value(int reg_num, bit [31:0] value);
+
         if (reg_num >= 0 && reg_num < 32) begin
             if (reg_num != 0) begin  // Reg 0 is hardwired to 0
                 reg_file_model[reg_num] = value;
