@@ -32,9 +32,7 @@ class riscv_base_test extends uvm_test;
 
         phase.raise_objection(this);
         
-        `uvm_info("TEST", $sformatf("\n\n********************************************"), UVM_LOW)
-        `uvm_info("TEST", $sformatf("RUNNING TEST: %s", get_type_name()), UVM_LOW)
-        `uvm_info("TEST", $sformatf("********************************************\n"), UVM_LOW)
+        `uvm_info("TEST", $sformatf("\033[1;34m RUNNING TEST: %s \033[0m\n", get_type_name()), UVM_LOW)
         
         #100;
 

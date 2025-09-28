@@ -51,7 +51,12 @@ class riscv_env extends uvm_env;
         phase.raise_objection(this);
         
         scb.reset_models();
+        
+        
+        `uvm_info("ENV", $sformatf("\033[1;34m Initializing scoreboard reg value\033[0m"), UVM_LOW)
         initialize_default_registers();
+        
+        `uvm_info("ENV", $sformatf("\033[1;34m Initializing scoreboard memory value\033[0m"), UVM_LOW)
         initialize_default_memory();
         
         phase.drop_objection(this);

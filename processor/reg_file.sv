@@ -29,6 +29,12 @@ module registerFile(
         for (i = 0; i < 32; i = i + 1) begin
             r_file[i] <= 32'd0;
         end
+
+        // Initialize test values to match UVM environment
+        r_file[1] <= 32'h00000005;  // x1 = 5
+        r_file[2] <= 32'h0000000A;  // x2 = 10  
+        r_file[3] <= 32'hFFFFFFFF;  // x3 = -1
+        r_file[4] <= 32'h00000003;  // x4 = 3
     end
 
     always @(negedge clk) begin

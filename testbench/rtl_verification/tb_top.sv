@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 
 import uvm_pkg::*;
+
 `include "uvm_macros.svh"
 
 `include "tb/interface.sv"
@@ -44,6 +45,8 @@ module tb;
     assign intf.monitor_pc = dut.PC_F;
     assign intf.monitor_instr = dut.instruction_F;
     assign intf.monitor_result = dut.result_W;
+    assign intf.monitor_regwrite = dut.regWrite_W;
+    assign intf.monitor_rd = dut.rd_W;
     
     initial begin
         // Register interface with UVM config database
