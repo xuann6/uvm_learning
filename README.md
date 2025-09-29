@@ -1,11 +1,26 @@
 # RISC-V Processor Implementation and Verification
 
-This documentations and all the codes are written by Yu-Hsuan (Yoshi) Chao. I started this side project since I realized that lots of the job for new grad asked for the verification skills, especially for UVM and SystemVerilog. First off, I tried Udemy course for SystemVerilog, UVM, and a follow-up project about UVM. The course gave me an initial glimpse about UVM and let me understand how powerful UVM is. However, the project is mostly about setting up easy UVM environment for some protocols (IC2, UART, SPI), and I feel like this isn't that interesting and I need more hands-on practice. So, I started to verifymy past project, which is a RISC-V 5 staged pipelined processor using UVM and document the learning path here as an open-source project.
+This project is trying to do a functional verification for RISC-V 5-staged pipelined processor. The goal of this project is to cover the usage of UVM, including driver, monitor, scoreboard, etc. 
+
+In the following I documented most of the issues and questions I had when doing this project. Hope this helps for someone who is also trying to learn verification basics. If you feel this project is helpful, please click the star botton. That will be much apprectiated!
+
+
+## Progress
+### Completed
+1. Completed `rtl_sim/unitTest`. Under `testbench/rtl_sim/unitTest`, please run: 
+    
+    ```bash=
+    bash run_unitTest.tcsh -c
+    ``` 
+
+### Todos
+1. `rtl_sim/bubbleSortTest` needs debugging
 
 ## References
 - [chipverify.com](https://www.chipverify.com/)
 
 ## Processor Implementation
+> TBD
 
 ## Processor Verification (UVM)
 
@@ -40,7 +55,16 @@ rtl_verification/
     |--- tb_top.sv
 ```
 
-### UVM Structure
+### UVM Verification
+- **Components:**
+  - [Environment](docs/verification/components/environment.md)
+  - [Testbench_top](docs/verification/components/testbench_top.md)
+  - [Driver](docs/verification/components/driver.md)
+  - [Monitor](docs/verification/components/monitor.md)
+  - [Scoreboard](docs/verification/components/scoreboard.md)
+  - [Sequences](docs/verification/components/sequences.md)
+  - [Transaction](docs/verification/components/transaction.md)
+  - [Interface](docs/verification/components/interface.md)
 
 #### Testbench Top
 > file: `tb_top.sv`
